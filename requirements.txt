@@ -1,1 +1,2 @@
-# Phase 2 deps — none yet, stdlib only
+python-dotenv==1.0.1
+pydantic==2.9.2
