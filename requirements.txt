@@ -1,8 +1,1 @@
-google-generativeai
-google-api-python-client
-google-auth-oauthlib
-google-auth-httplib2
-moviepy
-gTTS
-Pillow
-numpy
+# Phase 2 deps — none yet, stdlib only
