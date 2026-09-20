@@ -1,11 +1,26 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
 .venv/
 venv/
 .env
 
-# Generated artifacts
+# Output (rendered videos)
 output/*
 !output/.gitkeep
+
+# State (Phase 6)
 state/*
 !state/.gitkeep
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Generated artifacts
+*.mp4
+*.mp3
+*.wav
+*.json.tmp
