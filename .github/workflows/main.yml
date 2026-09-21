@@ -27,12 +27,12 @@ jobs:
 
       - name: Run pipeline
         env:
+          LOG_LEVEL: INFO
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          SCRIPT_MODEL: gpt-4o-mini
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
-        run: python main.py
+        run: python -m src.main
 
       - name: Upload output artifacts
         if: always()
