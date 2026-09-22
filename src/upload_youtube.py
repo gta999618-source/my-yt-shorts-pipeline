@@ -1,13 +1,14 @@
-"""Phase 5: Upload to YouTube. STUB for now."""
+"""
+upload_youtube.py — push a finished video to YouTube.
+Phase 2: STUB. Phase 5 swaps in the YouTube Data API v3.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
 
-from .config import settings
 
-
-def upload_video(video_path: Path, title: str, description: str, tags: list[str]) -> str:
-    """Pretend to upload; return a fake video ID."""
-    has_creds = bool(settings.yt_client_id and settings.yt_refresh_token)
-    print(f"[upload_youtube] stub upload title={title!r} creds_present={has_creds}")
-    return "STUB_VIDEO_ID"
+def upload_video(video_path: Path, title: str) -> str:
+    """Upload the video and return its YouTube ID. STUB implementation."""
+    print(f"[STUB UPLOAD] Would upload '{video_path}' as '{title}'")
+    return "stub-video-id-0000"
