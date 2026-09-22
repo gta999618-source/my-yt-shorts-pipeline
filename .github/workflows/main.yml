@@ -31,7 +31,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           TOPIC: "A surprising fact about the ocean"
           LOG_LEVEL: "INFO"
-          SCRIPT_MODEL: "gemini-2.5-flash-lite"
+          SCRIPT_MODEL: "gemini-3.5-flash-lite"
           TTS_VOICE: "en-US-JennyNeural"
         run: python -m src.main
 
