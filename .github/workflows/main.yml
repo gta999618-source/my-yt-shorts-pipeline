@@ -1,50 +1,44 @@
-"""
-main.py — pipeline orchestrator for my-yt-shorts-pipeline.
-"""
+name: YT Shorts Pipeline
 
-from __future__ import annotations
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 * * * *"
 
-import sys
-from pathlib import Path
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
 
-from src.build_video import build_video
-from src.config import get_settings
-from src.generate_audio import synthesize
-from src.generate_script import generate_script
-from src.logger import get_logger
-from src.upload_youtube import upload_video
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
 
-def main() -> int:
-    settings = get_settings()
-    log = get_logger("pipeline")
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-    out_dir = settings.output_path
+      - name: Run pipeline
+        env:
+          CI: "true"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TOPIC: "A surprising fact about the ocean"
+          LOG_LEVEL: "INFO"
+          SCRIPT_MODEL: "gemini-2.5-flash-lite"
+          TTS_VOICE: "en-US-JennyNeural"
+        run: python -m src.main
 
-    log.info("Pipeline starting. Topic=%r", settings.topic)
-
-    # Stage 1 — real script
-    script = generate_script(settings.topic)
-    script_text = script.as_plain_text()
-    script_path = out_dir / "script.txt"
-    script_path.write_text(script_text, encoding="utf-8")
-    log.info("Stage 1 OK — wrote %s (%d chars)", script_path, len(script_text))
-
-    # Stage 2 — real audio
-    audio_path = synthesize(script_text, out_dir / "audio.mp3")
-    log.info("Stage 2 OK — wrote %s", audio_path)
-
-    # Stage 3 — still stub
-    video_path = build_video(audio_path, script_text, out_dir / "video.mp4")
-    log.info("Stage 3 OK — wrote %s", video_path)
-
-    # Stage 4 — still stub
-    video_id = upload_video(video_path, title=script.title)
-    log.info("Stage 4 OK — video_id=%s", video_id)
-
-    log.info("Pipeline complete. Artifacts in %s/", out_dir)
-    return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-output
+          path: output/
+          if-no-files-found: warn
