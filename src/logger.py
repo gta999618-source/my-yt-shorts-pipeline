@@ -1,13 +1,15 @@
-"""Tiny logging helper so every module logs the same way."""
-import logging
-from .config import LOG_LEVEL
+"""
+logger.py — shared logger factory for my-yt-shorts-pipeline.
+"""
 
-def get_logger(name: str) -> logging.Logger:
-    logger = logging.getLogger(name)
-    if not logger.handlers:
-        handler = logging.StreamHandler()
-        fmt = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
-        handler.setFormatter(logging.Formatter(fmt, datefmt="%H:%M:%S"))
-        logger.addHandler(handler)
-        logger.setLevel(LOG_LEVEL)
-    return logger
+from __future__ import annotations
+
+import logging
+
+
+def get_logger(name: str = "pipeline") -> logging.Logger:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s | %(levelname)s | %(message)s",
+    )
+    return logging.getLogger(name)
