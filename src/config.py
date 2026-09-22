@@ -36,7 +36,7 @@ class Settings(BaseSettings):
     )
     output_dir: str = Field("output", alias="OUTPUT_DIR")
     log_level: str = Field("INFO", alias="LOG_LEVEL")
-    script_model: str = Field("gemini-2.5-flash-lite", alias="SCRIPT_MODEL")
+    script_model: str = Field("gemini-3.5-flash-lite", alias="SCRIPT_MODEL")
     tts_voice: str = Field("en-US-JennyNeural", alias="TTS_VOICE")
 
     @property
