@@ -1,9 +1,9 @@
 name: YT Shorts Pipeline
 
 on:
-  workflow_dispatch:        # manual trigger for Phase 2 testing
-  # schedule:               # enable in Phase 6
-  #   - cron: "0 */6 * * *"
+  workflow_dispatch:
+  # schedule:
+  #   - cron: "0 * * * *"
 
 jobs:
   build:
@@ -27,17 +27,16 @@ jobs:
 
       - name: Run pipeline
         env:
-          LOG_LEVEL: INFO
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
-          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
-          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          CI: "true"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TOPIC: "The history of the printing press"
+          LOG_LEVEL: "INFO"
         run: python -m src.main
 
-      - name: Upload output artifacts
+      - name: Upload artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: pipeline-output
           path: output/
-          if-no-files-found: ignore
+          if-no-files-found: warn
