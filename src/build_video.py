@@ -1,18 +1,24 @@
-"""Phase 4: Assemble video. STUB for now."""
+"""
+build_video.py — combine audio + visuals into a finished video file.
+Phase 2: STUB. Phase 4 swaps in moviepy/ffmpeg.
+"""
+
 from __future__ import annotations
 
 from pathlib import Path
 
-from .config import OUTPUT_DIR, settings
 
-
-def build_video(script_text: str, audio_path: Path) -> Path:
-    """Write a placeholder marker instead of a real MP4."""
-    out = OUTPUT_DIR / "short.placeholder.txt"
-    out.write_text(
-        f"[STUB VIDEO]\n{settings.video_width}x{settings.video_height}@{settings.video_fps}fps\n"
-        f"script_len={len(script_text)} audio={audio_path.name}\n",
+def build_video(
+    audio_path: Path,
+    script_text: str,
+    out_path: Path,
+) -> Path:
+    """Build the final video. STUB implementation."""
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(
+        "[STUB VIDEO PLACEHOLDER]\n\n"
+        f"audio source: {audio_path}\n"
+        f"script length: {len(script_text)} chars\n",
         encoding="utf-8",
     )
-    print(f"[build_video] wrote placeholder -> {out}")
-    return out
+    return out_path
