@@ -39,6 +39,11 @@ class Settings(BaseSettings):
     script_model: str = Field("gemini-3.5-flash-lite", alias="SCRIPT_MODEL")
     tts_voice: str = Field("en-US-JennyNeural", alias="TTS_VOICE")
 
+    # --- Video settings (Phase 4) ---
+    video_width: int = Field(1080, alias="VIDEO_WIDTH")
+    video_height: int = Field(1920, alias="VIDEO_HEIGHT")
+    video_fps: int = Field(30, alias="VIDEO_FPS")
+
     @property
     def output_path(self) -> Path:
         p = Path(self.output_dir)
