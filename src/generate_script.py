@@ -1,23 +1,32 @@
-"""Phase 3: Generate the Short's script. STUB for now."""
+"""
+generate_script.py — turn a topic into a short-form video script.
+Phase 2: STUB. Phase 3 swaps in a real LLM call.
+"""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-from .config import settings
 
-
-@dataclass
+@dataclass(frozen=True)
 class Script:
-    title: str
+    topic: str
+    hook: str
     body: str
-    tags: list[str]
+    cta: str
+
+    def as_plain_text(self) -> str:
+        return f"{self.hook}\n\n{self.body}\n\n{self.cta}"
 
 
-def generate_script(topic: str = "Why the sky is blue") -> Script:
-    """Return a placeholder script. Real LLM call lands in Phase 3."""
-    print(f"[generate_script] topic={topic!r} model={settings.script_model}")
+def generate_script(topic: str) -> Script:
+    """Return a Script for the given topic. STUB implementation."""
     return Script(
-        title=f"Placeholder: {topic}",
-        body="This is a stub script. Real generation comes in Phase 3.",
-        tags=["shorts", "placeholder"],
+        topic=topic,
+        hook=f"[STUB HOOK] Did you know this about {topic}?",
+        body=(
+            f"[STUB BODY] Here are three quick facts about {topic}. "
+            "One. Two. Three. That's it — short and punchy."
+        ),
+        cta="[STUB CTA] Follow for more.",
     )
