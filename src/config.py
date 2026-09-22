@@ -1,26 +1,37 @@
-"""Central configuration for the pipeline."""
+"""
+config.py — centralized, validated configuration for my-yt-shorts-pipeline.
+"""
+
+from __future__ import annotations
+
 import os
-from pathlib import Path
+from functools import lru_cache
 
 from dotenv import load_dotenv
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# Load .env in local dev; in CI, GitHub Actions injects env vars directly.
-load_dotenv()
+# Only load .env locally. CI sets env vars directly.
+if os.getenv("CI") != "true":
+    load_dotenv(override=False)
 
-# --- Paths ---
-ROOT = Path(__file__).resolve().parent.parent
-ASSETS_DIR = ROOT / "assets"
-OUTPUT_DIR = ROOT / "output"
-STATE_DIR = ROOT / "state"
 
-for d in (ASSETS_DIR, OUTPUT_DIR, STATE_DIR):
-    d.mkdir(parents=True, exist_ok=True)
+class Settings(BaseSettings):
+    """All runtime configuration for the pipeline."""
 
-# --- Pipeline settings ---
-VIDEO_WIDTH = int(os.getenv("VIDEO_WIDTH", "1080"))
-VIDEO_HEIGHT = int(os.getenv("VIDEO_HEIGHT", "1920"))
-VIDEO_FPS = int(os.getenv("VIDEO_FPS", "30"))
-SHORT_DURATION_SEC = int(os.getenv("SHORT_DURATION_SEC", "45"))
+    model_config = SettingsConfigDict(
+        env_file=None,
+        case_sensitive=True,
+        extra="ignore",
+    )
 
-# --- Logging ---
-LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+    gemini_api_key: str = Field(..., alias="GEMINI_API_KEY")
+
+    topic: str = Field("The history of the printing press", alias="TOPIC")
+    output_dir: str = Field("output", alias="OUTPUT_DIR")
+    log_level: str = Field("INFO", alias="LOG_LEVEL")
+
+
+@lru_cache(maxsize=1)
+def get_settings() -> Settings:
+    return Settings()  # type: ignore[call-arg]
