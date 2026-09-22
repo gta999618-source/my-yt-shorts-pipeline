@@ -1,5 +1,5 @@
 """
-config.py — centralized, validated configuration for my-yt-shorts-pipeline.gg
+config.py — centralized, validated configuration for my-yt-shorts-pipeline.
 """
 
 from __future__ import annotations
