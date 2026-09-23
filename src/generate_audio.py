@@ -1,7 +1,7 @@
 """
 generate_audio.py — TTS with caption generation using edge-tts.
 
-Phase 4: now produces BOTH an MP3 and an SRT subtitle file.
+Phase 4: produces BOTH an MP3 and an SRT subtitle file.
 """
 
 from __future__ import annotations
@@ -10,7 +10,6 @@ import asyncio
 from pathlib import Path
 
 import edge_tts
-from edge_tts import SubMaker
 
 from src.config import get_settings
 
@@ -23,17 +22,52 @@ async def _synth_with_subs(
 ) -> None:
     """Synthesize audio AND capture word boundaries for subtitles."""
     communicate = edge_tts.Communicate(text, voice)
-    submaker = SubMaker()
+    submaker = edge_tts.SubMaker()
 
     with open(audio_path, "wb") as audio_file:
         async for chunk in communicate.stream():
             if chunk["type"] == "audio":
                 audio_file.write(chunk["data"])
             elif chunk["type"] == "WordBoundary":
-                submaker.feed(chunk)
+                # edge-tts 7.x requires all four positional arguments
+                submaker.feed(
+                    chunk["offset"],
+                    chunk["duration"],
+                    chunk["text"],
+                )
 
-    with open(srt_path, "w", encoding="utf-8") as f:
-        f.write(submaker.get_srt())
+    # Write SRT file
+    srt_content = submaker.get_srt()
+    if not srt_content.strip():
+        # Fallback: build one big SRT from the full text
+        print("[generate_audio] WARNING: no word boundaries, using fallback SRT")
+        srt_content = _fallback_srt(text)
+
+    srt_path.write_text(srt_content, encoding="utf-8")
+
+
+def _fallback_srt(text: str) -> str:
+    """If SubMaker is empty, split text into chunks with rough timing."""
+    words = text.split()
+    # Roughly 3 words per second
+    chunk_size = 8
+    chunks = [" ".join(words[i:i + chunk_size]) for i in range(0, len(words), chunk_size)]
+
+    lines = []
+    t = 0.0
+    for i, chunk in enumerate(chunks, start=1):
+        end = t + (len(chunk.split()) / 3.0)
+        lines.append(f"{i}\n{_fmt(t)} --> {_fmt(end)}\n{chunk}\n")
+        t = end
+    return "\n".join(lines)
+
+
+def _fmt(seconds: float) -> str:
+    h = int(seconds // 3600)
+    m = int((seconds % 3600) // 60)
+    s = int(seconds % 60)
+    ms = int((seconds - int(seconds)) * 1000)
+    return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
 
 
 def synthesize(
