@@ -42,9 +42,16 @@ def main() -> int:
     )
     log.info("Stage 3 OK — wrote %s", video_path)
 
-    # Stage 4 — still stub
-    video_id = upload_video(video_path, title=script.title)
+    # Stage 4 — real YouTube upload
+    video_id = upload_video(
+        video_path=video_path,
+        title=script.title,
+        description=script.description,
+        tags=script.tags,
+        privacy=settings.yt_privacy,
+    )
     log.info("Stage 4 OK — video_id=%s", video_id)
+    log.info("Watch at https://youtu.be/%s", video_id)
 
     log.info("Pipeline complete. Artifacts in %s/", out_dir)
     return 0
