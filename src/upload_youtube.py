@@ -17,7 +17,7 @@ from googleapiclient.http import MediaFileUpload
 
 from src.config import get_settings
 
-SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
+SCOPES = ["https://www.googleapis.com/auth/youtube.force-ssl"]
 
 # COPPA flag — must be declared. False for general content.
 MADE_FOR_KIDS = False
