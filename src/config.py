@@ -29,6 +29,11 @@ class Settings(BaseSettings):
     # --- Required ---
     gemini_api_key: str = Field(..., alias="GEMINI_API_KEY")
 
+    # --- YouTube OAuth (Phase 5) ---
+    yt_client_id: str = Field("", alias="YT_CLIENT_ID")
+    yt_client_secret: str = Field("", alias="YT_CLIENT_SECRET")
+    yt_refresh_token: str = Field("", alias="YT_REFRESH_TOKEN")
+
     # --- Tunable ---
     topic: str = Field(
         "The history of the printing press",
@@ -43,6 +48,10 @@ class Settings(BaseSettings):
     video_width: int = Field(1080, alias="VIDEO_WIDTH")
     video_height: int = Field(1920, alias="VIDEO_HEIGHT")
     video_fps: int = Field(30, alias="VIDEO_FPS")
+
+    # --- YouTube upload (Phase 5) ---
+    yt_privacy: str = Field("private", alias="YT_PRIVACY")
+    yt_category_id: str = Field("28", alias="YT_CATEGORY_ID")  # 28 = Science & Tech
 
     @property
     def output_path(self) -> Path:
